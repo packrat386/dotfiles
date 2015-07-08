@@ -9,7 +9,7 @@ chruby 2.2.2
 
 # It's go time
 export GOPATH=~/go
-export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:$GOPATH/bin:/usr/local/go/bin
 [ -d "/Users/acoyle/github/8b/bin" ] && export PATH="/Users/acoyle/github/8b/bin:$PATH"
 
 PERL_MB_OPT="--install_base \"/Users/acoyle/perl5\""; export PERL_MB_OPT;
