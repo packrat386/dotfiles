@@ -1,13 +1,25 @@
 ;;------------------------------------------------------------------------------
-;; Load Path
+;; Setup
 ;;------------------------------------------------------------------------------
 (add-to-list 'load-path "~/.emacs.d/lisp")
+
+(require 'package) ;; You might already have this line
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(when (< emacs-major-version 24)
+  ;; For important compatibility libraries like cl-lib
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+(package-initialize) ;; You might already have this line
+
+(require 'use-package)
+(require 'bind-key)
+
 
 ;;------------------------------------------------------------------------------
 ;; General Hotkeys
 ;;------------------------------------------------------------------------------
 (require 'compile)
 (global-set-key (kbd "M-1") 'compile)
+(setq-default indent-tabs-mode nil)
 
 ;;------------------------------------------------------------------------------
 ;; Git
@@ -17,62 +29,42 @@
 (global-set-key (kbd "M-2") 'git-status)
 
 ;;------------------------------------------------------------------------------
-;; Testing
-;;------------------------------------------------------------------------------
-(require 'feature-mode)
-(add-to-list 'auto-mode-alist '("\.feature$" . feature-mode))
-
-;;------------------------------------------------------------------------------
 ;; Ruby Stuff
 ;;------------------------------------------------------------------------------
-(require 'rspec-mode)
-(defun rat-ruby-compilation() 
-  (set (make-local-variable 'compile-command)
-       (format "ruby %s"
-	       (file-name-nondirectory buffer-file-name))) 
-  (set (make-local-variable 'rubocop-command)
-       (format "rubocop %s"
-	       (file-name-nondirectory buffer-file-name)))
-  (local-set-key (kbd "M-3") 'rat-rubocop-check)
-  (local-set-key (kbd "M-#") 'rat-rubocop-all)
-  (local-set-key (kbd "M-4") 'rat-rspec-class))
-
-(defun rat-rubocop-check()
-  (interactive)
-  (compile rubocop-command))
-
-(defun rat-rubocop-all()
-  (interactive)
-  (compile "rubocop ."))
-
-(defun camel-to-snake (s)
-  (save-match-data
-    (let ((case-fold-search nil))
-      (camel-to-snake-recursively s))))
-
-(defun camel-to-snake-recursively (s)
-  (let ((ss (downcase-first s)))
-    (if (string-match "[A-Z]" ss)
-	(concat (substring ss 0 (match-beginning 0)) "_" (camel-to-snake-recursively (substring ss (match-beginning 0) (length ss))))
-      ss)))
-
-(defun rat-rspec-class(class)
-  (interactive "Mclass to test (leave empty for current file): ")
-  (if (equal class "")
-      (compile (format "rspec %s_spec.rb" (file-name-base buffer-file-name)))
-      (compile (format "rspec %s_spec.rb" (camel-to-snake class)))))
-
-(add-hook 'ruby-mode-hook 'rat-ruby-compilation)
+(use-package enh-ruby-mode
+  :mode "\\.rb$"
+  :interpreter "ruby"
+  :config
+  (bind-keys :map enh-ruby-mode-map
+             ("M-3" . rubocop-check-current-file)          
+             ("M-#" . rubocop-check-project))
+  (setq enh-ruby-deep-arglist nil
+        enh-ruby-deep-indent-paren nil
+        enh-ruby-deep-indent-paren-style nil
+        enh-ruby-add-encoding-comment-on-save nil))
+(use-package rubocop)
+(use-package rspec-mode)
+(use-package yaml-mode)
 
 ;;------------------------------------------------------------------------------
 ;; Rails Stuff
 ;;------------------------------------------------------------------------------
-(require 'haml-mode)
+(use-package haml-mode)
 
 ;;------------------------------------------------------------------------------
 ;; Go Stuff
 ;;------------------------------------------------------------------------------
-(require 'go-mode)
-(setq exec-path (cons "/usr/local/go/bin" exec-path))
-(add-to-list 'exec-path "/Users/acoyle/go/bin")
-(add-hook 'before-save-hook 'gofmt-before-save)
+(use-package go-mode
+  :config
+  (setq exec-path (cons "/usr/local/go/bin" exec-path))
+  (add-to-list 'exec-path "/Users/acoyle/go/bin")
+  (add-hook 'before-save-hook 'gofmt-before-save))
+
+;;------------------------------------------------------------------------------
+;; Shell Stuff
+;;------------------------------------------------------------------------------
+(use-package sh-mode
+  :init
+  (add-hook 'sh-mode-hook
+              (setq-default sh-basic-offset 2
+                            sh-indentation 2)))
