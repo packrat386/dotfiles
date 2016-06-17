@@ -2,7 +2,6 @@
 ;; Setup
 ;;------------------------------------------------------------------------------
 (add-to-list 'load-path "~/.emacs.d/lisp")
-
 (require 'package) ;; You might already have this line
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (when (< emacs-major-version 24)
@@ -10,53 +9,55 @@
   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize) ;; You might already have this line
 
+(unless package-archive-contents
+  (package-refresh-contents))
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
 (require 'use-package)
 (require 'bind-key)
-
 
 ;;------------------------------------------------------------------------------
 ;; General Hotkeys and stuff
 ;;------------------------------------------------------------------------------
 (require 'compile)
-(global-set-key (kbd "M-1") 'compile)
+(bind-key "M-1" 'compile)
 (setq-default indent-tabs-mode nil)
 (setq column-number-mode t)
 
 ;;------------------------------------------------------------------------------
 ;; Git
 ;;------------------------------------------------------------------------------
-(require 'git)
-(require 'git-blame)
-(global-set-key (kbd "M-2") 'magit-status)
+(use-package magit
+  :ensure t
+  :bind ("M-2" . magit-status))
 
 ;;------------------------------------------------------------------------------
 ;; Ruby Stuff
 ;;------------------------------------------------------------------------------
 (use-package enh-ruby-mode
+  :ensure t
   :mode "\\.rb$"
   :interpreter "ruby"
   :config
-  (bind-keys :map enh-ruby-mode-map
-             ("M-3" . rubocop-check-current-file)          
-             ("M-#" . rubocop-check-project))
+  :bind (:map enh-ruby-mode-map
+              ("M-3" . rubocop-check-current-file)          
+              ("M-#" . rubocop-check-project))
   (setq enh-ruby-deep-arglist nil
         enh-ruby-deep-indent-paren nil
         enh-ruby-deep-indent-paren-style nil
         enh-ruby-add-encoding-comment-on-save nil
         enh-ruby-program "/usr/bin/ruby")) ; system ruby
-(use-package rubocop)
-(use-package rspec-mode)
-(use-package yaml-mode)
-
-;;------------------------------------------------------------------------------
-;; Rails Stuff
-;;------------------------------------------------------------------------------
-(use-package haml-mode)
+(use-package rubocop :ensure t)
+(use-package rspec-mode :ensure t)
+(use-package yaml-mode :ensure t)
+(use-package haml-mode :ensure t)
 
 ;;------------------------------------------------------------------------------
 ;; Go Stuff
 ;;------------------------------------------------------------------------------
 (use-package go-mode
+  :ensure t
   :config
   (setq exec-path (cons "/usr/local/go/bin" exec-path))
   (add-to-list 'exec-path "/Users/acoyle/go/bin")
@@ -66,10 +67,9 @@
 ;; Shell Stuff
 ;;------------------------------------------------------------------------------
 (use-package sh-mode
-  :init
-  (add-hook 'sh-mode-hook
-              (setq-default sh-basic-offset 2
-                            sh-indentation 2)))
+  :config
+  (setq sh-basic-offset 2
+        sh-indentation 2))
 
 ;;------------------------------------------------------------------------------
 ;; Markdown Stuff
