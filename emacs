@@ -15,11 +15,12 @@
 
 
 ;;------------------------------------------------------------------------------
-;; General Hotkeys
+;; General Hotkeys and stuff
 ;;------------------------------------------------------------------------------
 (require 'compile)
 (global-set-key (kbd "M-1") 'compile)
 (setq-default indent-tabs-mode nil)
+(setq column-number-mode t)
 
 ;;------------------------------------------------------------------------------
 ;; Git
@@ -41,7 +42,8 @@
   (setq enh-ruby-deep-arglist nil
         enh-ruby-deep-indent-paren nil
         enh-ruby-deep-indent-paren-style nil
-        enh-ruby-add-encoding-comment-on-save nil))
+        enh-ruby-add-encoding-comment-on-save nil
+        enh-ruby-program "/usr/bin/ruby")) ; system ruby
 (use-package rubocop)
 (use-package rspec-mode)
 (use-package yaml-mode)
@@ -68,3 +70,11 @@
   (add-hook 'sh-mode-hook
               (setq-default sh-basic-offset 2
                             sh-indentation 2)))
+
+;;------------------------------------------------------------------------------
+;; Markdown Stuff
+;;------------------------------------------------------------------------------
+(use-package markdown-mode
+  :ensure t
+  :commands (gfm-mode)
+  :mode "\\.md$")
