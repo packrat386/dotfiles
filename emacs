@@ -39,15 +39,14 @@
   :ensure t
   :mode "\\.rb$"
   :interpreter "ruby"
-  :config
+  :config (setq enh-ruby-deep-arglist nil
+                enh-ruby-deep-indent-paren nil
+                enh-ruby-deep-indent-paren-style nil
+                enh-ruby-add-encoding-comment-on-save nil
+                enh-ruby-program "/usr/bin/ruby") ; system ruby
   :bind (:map enh-ruby-mode-map
               ("M-3" . rubocop-check-current-file)          
-              ("M-#" . rubocop-check-project))
-  (setq enh-ruby-deep-arglist nil
-        enh-ruby-deep-indent-paren nil
-        enh-ruby-deep-indent-paren-style nil
-        enh-ruby-add-encoding-comment-on-save nil
-        enh-ruby-program "/usr/bin/ruby")) ; system ruby
+              ("M-#" . rubocop-check-project)))
 (use-package rubocop :ensure t)
 (use-package rspec-mode :ensure t)
 (use-package yaml-mode :ensure t)
@@ -84,3 +83,9 @@
 ;;------------------------------------------------------------------------------
 (use-package lisp-mode
   :mode "\\.el$" "\\.lisp$" "\\.cl$" "emacs$")
+
+;;------------------------------------------------------------------------------
+;; Clojure
+;;------------------------------------------------------------------------------
+(use-package clojure-mode :ensure t)
+(use-package cider :ensure t)
