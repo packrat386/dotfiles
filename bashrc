@@ -5,7 +5,7 @@ alias dir='clear; pwd; ls .'
 alias ll='ls -al'
 
 source /usr/local/opt/chruby/share/chruby/chruby.sh
-chruby 2.3
+chruby 2.4
 
 # It's go time
 export GOPATH=~/go

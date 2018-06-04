@@ -22,6 +22,7 @@
 ;;------------------------------------------------------------------------------
 (require 'compile)
 (bind-key "M-1" 'compile)
+(bind-key "C-c C-c" 'comment-or-uncomment-region)
 (setq-default indent-tabs-mode nil)
 (setq column-number-mode t)
 
@@ -43,7 +44,7 @@
                 enh-ruby-deep-indent-paren nil
                 enh-ruby-deep-indent-paren-style nil
                 enh-ruby-add-encoding-comment-on-save nil
-                enh-ruby-program "/usr/bin/ruby") ; system ruby
+                enh-ruby-program "/Users/acoyle/.rubies/ruby-2.2.2/bin/ruby") ; ruby 2.2.2 is pretty stable
   :bind (:map enh-ruby-mode-map
               ("M-3" . rubocop-check-current-file)          
               ("M-#" . rubocop-check-project)))
@@ -58,9 +59,11 @@
 (use-package go-mode
   :ensure t
   :config
-  (setq exec-path (cons "/usr/local/go/bin" exec-path))
+  ;; TODO: infer GOROOT
   (add-to-list 'exec-path "/Users/acoyle/go/bin")
   (add-hook 'before-save-hook 'gofmt-before-save))
+(use-package go-guru
+  :ensure t)
 
 ;;------------------------------------------------------------------------------
 ;; Shell Stuff
