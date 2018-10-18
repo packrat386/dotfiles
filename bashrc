@@ -5,12 +5,12 @@ alias dir='clear; pwd; ls .'
 alias ll='ls -al'
 
 # OSX
-if [-f /usr/local/opt/chruby/share/chruby/chruby.sh]; then
+if [ -f /usr/local/opt/chruby/share/chruby/chruby.sh ]; then
    source /usr/local/opt/chruby/share/chruby/chruby.sh
 fi
 
 # Linux
-if [-f /usr/share/chruby/chruby.sh]; then
+if [ -f /usr/share/chruby/chruby.sh ]; then
    source /usr/share/chruby/chruby.sh
 fi
 
