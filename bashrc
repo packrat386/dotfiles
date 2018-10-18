@@ -4,7 +4,16 @@ alias l='ls'
 alias dir='clear; pwd; ls .'
 alias ll='ls -al'
 
-source /usr/local/opt/chruby/share/chruby/chruby.sh
+# OSX
+if [-f /usr/local/opt/chruby/share/chruby/chruby.sh]; then
+   source /usr/local/opt/chruby/share/chruby/chruby.sh
+fi
+
+# Linux
+if [-f /usr/share/chruby/chruby.sh]; then
+   source /usr/share/chruby/chruby.sh
+fi
+
 chruby 2.4
 
 # It's go time
