@@ -3,7 +3,7 @@
 ## VARS ##
 dir=~/dotfiles
 olddir=~/dotfiles_old
-files="emacs emacs.d bashrc bash_profile gitconfig gitignore"
+files="emacs bashrc bash_profile gitconfig gitignore"
 
 echo "Creating dir to save old files"
 mkdir -p $olddir
