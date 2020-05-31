@@ -1,0 +1,5 @@
+[user]
+        name = Aidan Coyle
+        email = packrat386@gmail.com
+[core]
+        excludesfile = ~/.gitignore
