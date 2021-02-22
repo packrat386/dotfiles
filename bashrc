@@ -10,8 +10,8 @@ if [ -f /usr/local/opt/chruby/share/chruby/chruby.sh ]; then
 fi
 
 # Linux
-if [ -f /usr/share/chruby/chruby.sh ]; then
-   source /usr/share/chruby/chruby.sh
+if [ -f /usr/local/share/chruby/chruby.sh ]; then
+   source /usr/local/share/chruby/chruby.sh
 fi
 
 # It's go time

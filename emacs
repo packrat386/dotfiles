@@ -38,18 +38,9 @@
 ;;------------------------------------------------------------------------------
 ;; Ruby Stuff
 ;;------------------------------------------------------------------------------
-(use-package enh-ruby-mode
+(use-package ruby-mode
   :ensure t
-  :mode "\\.rb$"
-  :interpreter "ruby"
-  :config (setq enh-ruby-deep-arglist nil
-                enh-ruby-deep-indent-paren nil
-                enh-ruby-deep-indent-paren-style nil
-                enh-ruby-add-encoding-comment-on-save nil
-                enh-ruby-program "/usr/bin/ruby")
-  :bind (:map enh-ruby-mode-map
-              ("M-3" . rubocop-check-current-file)          
-              ("M-#" . rubocop-check-project)))
+  :mode "\\.rb$")
 (use-package rubocop :ensure t)
 (use-package rspec-mode :ensure t)
 (use-package yaml-mode :ensure t)
