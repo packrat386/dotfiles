@@ -27,6 +27,7 @@
 (setq column-number-mode t)
 (use-package cyberpunk-theme :ensure t)
 (load-theme 'cyberpunk t)
+(setq backup-directory-alist '(("." . "~/.emacs.d/.crap/backups")))
 
 ;;------------------------------------------------------------------------------
 ;; Git

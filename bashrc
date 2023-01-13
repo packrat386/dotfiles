@@ -4,9 +4,18 @@ export EDITOR=emacs
 alias l='ls'
 alias ll='ls -al'
 
+# brew env vars
+if [ -f /opt/homebrew/bin/brew ]; then
+  eval $(/opt/homebrew/bin/brew shellenv)
+fi
+
 # OSX
 if [ -f /usr/local/opt/chruby/share/chruby/chruby.sh ]; then
    source /usr/local/opt/chruby/share/chruby/chruby.sh
+fi
+
+if [ -f /opt/homebrew/opt/chruby/share/chruby/chruby.sh ]; then
+  source /opt/homebrew/opt/chruby/share/chruby/chruby.sh
 fi
 
 # Linux
@@ -18,5 +27,8 @@ fi
 export GOPATH=~/go
 export GOPRIVATE=git.enova.com
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
+export PATH=$PATH:~/bin
 
-export PS1=" [\h] \W > "
+[ -s ~/github/sk/sk.sh ] && \. ~/github/sk/sk.sh # load sk
+
+export PS1="  [\h] \W > "
