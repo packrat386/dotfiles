@@ -12,11 +12,10 @@
 
 (unless package-archive-contents
   (package-refresh-contents))
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
 
-(require 'use-package)
-(require 'bind-key)
+(defun ensure-package (package-name)
+  (unless (package-installed-p package-name)
+    (package-install package-name)))
 
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (load custom-file 'noerror)
@@ -24,14 +23,13 @@
 ;;------------------------------------------------------------------------------
 ;; General Hotkeys and stuff
 ;;------------------------------------------------------------------------------
-(require 'compile)
-(bind-key "M-1" 'compile)
-(bind-key "C-c C-c" 'comment-or-uncomment-region)
+(global-set-key (kbd "M-1") 'compile)
+(global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
 
 (setq-default indent-tabs-mode nil)
 (setq column-number-mode t)
 
-(use-package cyberpunk-theme :ensure t)
+(ensure-package 'cyberpunk-theme)
 (load-theme 'cyberpunk t)
 
 ;; don't need random backup garbage
@@ -43,22 +41,16 @@
 ;;------------------------------------------------------------------------------
 ;; Git
 ;;------------------------------------------------------------------------------
-(use-package magit
-  :ensure t
-  :bind ("M-2" . magit-status))
-(setq magit-refresh-status-buffer nil)
-
+(ensure-package 'magit)
+(global-set-key (kbd "M-2") 'magit-status)
+(setq magit-refresh-status-buffer nil) ;; optimization for gigantic repos?
 
 ;;------------------------------------------------------------------------------
 ;; Ruby Stuff
 ;;------------------------------------------------------------------------------
-(use-package ruby-mode
-  :ensure t
-  :mode "\\.rb$")
-(use-package rubocop :ensure t)
-(use-package rspec-mode :ensure t)
-(use-package yaml-mode :ensure t)
-(use-package haml-mode :ensure t)
+(ensure-package 'ruby-mode)
+(ensure-package 'rspec-mode)
+(ensure-package 'yaml-mode)
 
 (defun rspec-spec-file-for (a-file-name)
   "Find spec for the specified file."
@@ -89,55 +81,58 @@
 ;;------------------------------------------------------------------------------
 ;; Go Stuff
 ;;------------------------------------------------------------------------------
-(use-package go-mode
-  :ensure t
-  :config
-  (add-hook 'before-save-hook 'gofmt-before-save))
-
+(ensure-package 'go-mode)
+(add-hook
+ 'go-mode-hook
+ (lambda ()
+   (add-hook 'before-save-hook #'gofmt-before-save)))
+                          
 ;;------------------------------------------------------------------------------
 ;; Shell Stuff
 ;;------------------------------------------------------------------------------
-(use-package sh-script
-  :config
-  (setq sh-basic-offset 2
-        sh-indentation 2))
+(add-hook
+ 'sh-mode-hook
+ (lambda ()
+   (setq sh-basic-offset 2
+         sh-indentation 2)))
 
 ;;------------------------------------------------------------------------------
 ;; Markdown Stuff
 ;;------------------------------------------------------------------------------
-(use-package markdown-mode
-  :ensure t
-  :commands (gfm-mode)
-  :mode "\\.md$")
+(ensure-package 'markdown-mode)
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
 ;;------------------------------------------------------------------------------
 ;; Lisp
 ;;------------------------------------------------------------------------------
-(use-package lisp-mode
-  :mode "\\.el$" "\\.lisp$" "\\.cl$" "emacs$")
-
+(add-to-list 'auto-mode-alist '("\\.el\\'" . lisp-mode))
+(add-to-list 'auto-mode-alist '("\\.lisp\\'" . lisp-mode))
+(add-to-list 'auto-mode-alist '("\\.cl\\'" . lisp-mode))
+(add-to-list 'auto-mode-alist '("emacs\\'" . lisp-mode))
 
 ;;------------------------------------------------------------------------------
 ;; HCl
 ;;------------------------------------------------------------------------------
-(use-package hcl-mode
-  :ensure t
-  :mode "\\.tf$")
-
+(ensure-package 'hcl-mode)
+(add-to-list 'auto-mode-alist '("\\.tf\\'" . hcl-mode))
 
 ;;------------------------------------------------------------------------------
 ;; Java (WIP, got some flexport stuff)
 ;;------------------------------------------------------------------------------
-(use-package bazel :ensure t)
+(ensure-package 'bazel)
 
+(require 'cc-mode)
 (require 'packrat386/fx-java)
 
-(use-package auto-revert-mode :hook java-mode)
-(use-package java-mode
-    :bind (:map java-mode-map
-           ("C-c b" . fx-java-build-package-local)
-           ("C-c v" . fx-java-test-package-local)
-           ("C-c r" . fx-java-run-package-local)
-           ("C-c c" . fx-java-check-package-local)
-           ("C-c t" . fx-java-toggle-main-or-test)
-           ("C-c f" . fx-java-format-project)))
+(add-to-list
+ 'java-mode-hook
+ (lambda ()
+   (auto-revert-mode)
+   (setq c-syntactic-indentation nil)))
+
+(define-key java-mode-map (kbd "C-c b") 'fx-java-build-package-local)
+(define-key java-mode-map (kbd "C-c v") 'fx-java-test-package-local)
+(define-key java-mode-map (kbd "C-c r") 'fx-java-run-package-local)
+(define-key java-mode-map (kbd "C-c c") 'fx-java-check-package-local)
+(define-key java-mode-map (kbd "C-c t") 'fx-java-toggle-main-or-test)
+(define-key java-mode-map (kbd "C-c f") 'fx-java-format-project)
