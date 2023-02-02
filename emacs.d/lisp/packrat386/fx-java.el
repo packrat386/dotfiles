@@ -1,6 +1,28 @@
-;; bazel build //current/directory:$rule-name (C-c b)
-;; rule-name defaults to the name of the directory
+(require 'bazel)
+(require 'cc-mode)
+(require 'google-c-style)
+
+(define-minor-mode fx-java-mode
+    "A minor mode providing some utilities for flexport's java apps"
+  :lighter " fx"
+  :keymap (let ((map (make-sparse-keymap)))
+            (define-key map (kbd "C-c b") 'fx-java-build-package-local)
+            (define-key map (kbd "C-c v") 'fx-java-test-package-local)
+            (define-key map (kbd "C-c r") 'fx-java-run-package-local)
+            (define-key map (kbd "C-c c") 'fx-java-check-package-local)
+            (define-key map (kbd "C-c t") 'fx-java-toggle-main-or-test)
+            (define-key map (kbd "C-c f") 'fx-java-format-project)
+            map))
+
+;; this doesn't get the indentation perfect, but it's pretty close
+(add-hook 'fx-java-mode-hook 'google-set-c-style)
+
+;; so that the results of fx-java-format-project will be visible
+(add-hook 'fx-java-mode-hook 'auto-revert-mode)
+
 (defun fx-java-build-package-local (rule-name)
+  "runs `bazel build //current/directory:$rule-name`.
+rule-name defaults to the name of the directory."
   (interactive
    (list (read-string "rule-name: " (fx-java-local-dir-name buffer-file-name))))
   (bazel--compile
@@ -8,9 +30,9 @@
    "--"
    (fx-java-bazel-local-rule buffer-file-name rule-name)))
 
-;; bazel test //current/directory:$rule-ame (C-c v)
-;; rule-name defaults to 'test'
 (defun fx-java-test-package-local (rule-name)
+  "Runs `bazel test //current/directory:$rule-name`.
+rule-name defaults to 'test'"
   (interactive
    (list (read-string "rule-name: " "test")))
   (bazel--compile
@@ -18,24 +40,23 @@
    "--"
    (fx-java-bazel-local-rule buffer-file-name rule-name)))
 
-;; bazel run //current/directory:$rule-name (C-c r <rule-name>)
 (defun fx-java-run-package-local (rule-name)
+  "Runs `bazel run //current/directory:$rule-name`."
   (interactive (list (read-string "rule-name: ")))
   (bazel--compile
    "run"
    "--"
    (fx-java-bazel-local-rule buffer-file-name rule-name)))
 
-;; bazel run //current/directory:check (C-c c)
-;; this is essentially a special case of "run"
 (defun fx-java-check-package-local ()
+  "Runs `bazel run //current/directory:check`.
+This is essentially a special case of 'run'"
   (interactive)
   (fx-java-run-package-local "check"))
 
-;; bazel run //build-utils/format:java <project name> (C-c f)
-;; <project name> is computed
-;; you'll need to revert the buffer(s) to see changes
 (defun fx-java-format-project ()
+  "Runs `bazel run //build-utils/format:java <project name>`.
+Project name is computed based on the workspace root."
   (interactive)
   (bazel--compile
    "run"
@@ -43,10 +64,10 @@
    "//build-utils/format:java"
    (fx-java-project-name buffer-file-name)))
 
-;; toggle between main and test directories for a package (C-c t)
-;; if you're in src/main/x/y/Z.java go to src/test/x/y
-;; if you're in src/test/x/y/ZTest.java go to src/main/x/y
 (defun fx-java-toggle-main-or-test ()
+  "Toggles between the 'main' and 'test' directories for a package.
+If you're in src/main/x/y/Z.java go to src/test/x/y.
+If you're in src/test/x/y/ZTest.java go to src/main/x/y."
   (interactive)
   (find-file (fx-java-main-or-test buffer-file-name)))
 
@@ -98,8 +119,8 @@
 
 (defun fx-java-local-dir-path-in-root (target-file)
   (string-remove-prefix
-    (fx-java-bazel-root-dir)
-    (fx-java-local-dir-path target-file)))
+   (fx-java-bazel-root-dir)
+   (fx-java-local-dir-path target-file)))
 
 (defun fx-java-local-dir-name (target-file)
   (file-name-nondirectory (fx-java-local-dir-path target-file)))

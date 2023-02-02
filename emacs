@@ -2,6 +2,7 @@
 ;; Setup
 ;;------------------------------------------------------------------------------
 (add-to-list 'load-path "~/.emacs.d/lisp")
+(add-to-list 'load-path "~/.emacs.d/lisp/external")
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
@@ -121,18 +122,6 @@
 ;;------------------------------------------------------------------------------
 (ensure-package 'bazel)
 
-(require 'cc-mode)
 (require 'packrat386/fx-java)
 
-(add-to-list
- 'java-mode-hook
- (lambda ()
-   (auto-revert-mode)
-   (setq c-syntactic-indentation nil)))
-
-(define-key java-mode-map (kbd "C-c b") 'fx-java-build-package-local)
-(define-key java-mode-map (kbd "C-c v") 'fx-java-test-package-local)
-(define-key java-mode-map (kbd "C-c r") 'fx-java-run-package-local)
-(define-key java-mode-map (kbd "C-c c") 'fx-java-check-package-local)
-(define-key java-mode-map (kbd "C-c t") 'fx-java-toggle-main-or-test)
-(define-key java-mode-map (kbd "C-c f") 'fx-java-format-project)
+(add-to-list 'java-mode-hook 'fx-java-mode)
