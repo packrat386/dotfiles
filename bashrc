@@ -1,5 +1,6 @@
 export PATH=/usr/local/bin:$PATH
 export EDITOR=emacs
+unset COLORTERM
 
 alias l='ls'
 alias ll='ls -al'
@@ -32,3 +33,6 @@ export PATH=$PATH:~/bin
 [ -s ~/github/sk/sk.sh ] && \. ~/github/sk/sk.sh # load sk
 
 export PS1="  [\h] \W > "
+
+# load employer specific stuff last
+[ -s ~/.employer/bashrc ] && \. ~/.employer/bashrc

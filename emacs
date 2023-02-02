@@ -53,31 +53,7 @@
 (ensure-package 'rspec-mode)
 (ensure-package 'yaml-mode)
 
-(defun rspec-spec-file-for (a-file-name)
-  "Find spec for the specified file."
-  (if (rspec-spec-file-p a-file-name)
-      a-file-name
-      (rspec-spec-file-for-target a-file-name)))
-
-(defun rspec-spec-file-for-target (a-file-name)
-  (cl-loop for pfx in (rspec-primary-source-dirs-prefix)
-           for target = (expand-file-name
-                         (string-remove-prefix pfx (rspec-hypothetical-spec-file-for-target a-file-name))
-                         (rspec-spec-directory a-file-name))
-           if (file-exists-p target)
-           return target))
-
-(defun rspec-hypothetical-spec-file-for-target (a-file-name)
-  (rspec-specize-file-name
-   (file-relative-name
-    a-file-name
-    (rspec-spec-directory a-file-name))))
-
-  (defun rspec-primary-source-dirs-prefix ()
-    (cons
-     "../"
-     (cl-loop for pfx in rspec-primary-source-dirs
-           collect (concat "../" pfx "/"))))
+(require 'packrat386/rspec-monkeypatch)
 
 ;;------------------------------------------------------------------------------
 ;; Go Stuff
@@ -96,6 +72,9 @@
  (lambda ()
    (setq sh-basic-offset 2
          sh-indentation 2)))
+
+(add-to-list 'auto-mode-alist '("bashrc\\'" . sh-mode))
+
 
 ;;------------------------------------------------------------------------------
 ;; Markdown Stuff
@@ -118,10 +97,7 @@
 (add-to-list 'auto-mode-alist '("\\.tf\\'" . hcl-mode))
 
 ;;------------------------------------------------------------------------------
-;; Java (WIP, got some flexport stuff)
+;; Employer Specific Config
 ;;------------------------------------------------------------------------------
-(ensure-package 'bazel)
-
-(require 'packrat386/fx-java)
-
-(add-to-list 'java-mode-hook 'fx-java-mode)
+(add-to-list 'load-path "~/.employer/elisp")
+(require 'employer-setup nil 'noerror) ;; noerror cause this might not be there
