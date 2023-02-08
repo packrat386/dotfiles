@@ -43,6 +43,8 @@
 ;; Git
 ;;------------------------------------------------------------------------------
 (ensure-package 'magit)
+(require 'packrat386/magit)
+
 (global-set-key (kbd "M-2") 'magit-status)
 (setq magit-refresh-status-buffer nil) ;; optimization for gigantic repos?
 
