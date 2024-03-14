@@ -34,6 +34,12 @@ to simply remove spaces or tabs to the previous defined tab-stop column."
   (let ((indent-line-function 'indent-relative))
     (newline-and-indent)))
 
+(defun dumb-tab-set-width (local-width)
+  "Set tab-width locally"
+  (interactive
+   (list (read-number "width: " 2)))
+  (setq-local tab-width local-width))
+
 (defun dumb-tab--toggle-electric-inhibit ()
   "When enabled, save the old value of `electric-indent-inhibit' and
 then set it to true. When disabled restore the old value. Don't call
@@ -63,6 +69,7 @@ you want the default 8 space tabs)."
             (define-key map (kbd "TAB") 'dumb-tab-tab)
             (define-key map (kbd "<backtab>") 'dumb-tab-backtab)
             (define-key map (kbd "RET") 'dumb-tab-newline)
+            (define-key map (kbd "C-x t w") 'dumb-tab-set-width)
             map)
   (dumb-tab--toggle-electric-inhibit))
 
