@@ -6,6 +6,30 @@
   (interactive)
   (browse-url (ghh--repo-url "origin")))
 
+(defun ghh-browse-to-file ()
+  "Opens the current file in github. WIP"
+  (interactive)
+  (if
+   buffer-file-name
+   (browse-url
+    (string-join
+     (list
+      (ghh--repo-url "origin")
+      "blob"
+      (ghh--main-branch)
+      (ghh--file-relto-root buffer-file-name))
+     "/"))
+   (error "current buffer is not a file")))
+
+(defun ghh--main-branch ()
+  "main")
+
+(defun ghh--file-relto-root (filename)
+  (file-relative-name filename (ghh--project-root)))
+
+(defun ghh--project-root ()
+  (magit-git-string "rev-parse" "--show-toplevel"))
+
 (defun ghh--repo-url (remote-name)
   (let ((remote-url (ghh--remote-url remote-name)))
     (if
