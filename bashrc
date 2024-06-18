@@ -35,9 +35,11 @@ man() {
   local man_prog
   read -d '' man_prog <<ELISP
   (progn
-    (man "${1}")
+    (man "${@}")
+    (setq confirm-kill-processes nil)
+    (keymap-set Man-mode-map "q" 'save-buffers-kill-emacs)
     (let
-      ((man-buffer (car (match-buffers "man ${1}"))))
+      ((man-buffer (car (match-buffers "man ${@}"))))
       (display-buffer man-buffer)
       (delete-other-windows (get-buffer-window man-buffer))))
 ELISP
