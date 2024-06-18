@@ -24,9 +24,10 @@ if [ -f /usr/local/share/chruby/chruby.sh ]; then
    source /usr/local/share/chruby/chruby.sh
 fi
 
+chruby 3.2
+
 # It's go time
 export GOPATH=~/go
-export GOPRIVATE=git.enova.com
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 export PATH=$PATH:~/bin
 
