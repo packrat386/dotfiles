@@ -34,14 +34,36 @@ export PATH=$PATH:~/bin
 man() {
   local man_prog
   read -d '' man_prog <<ELISP
-  (progn
-    (man "${@}")
-    (setq confirm-kill-processes nil)
-    (keymap-set Man-mode-map "q" 'save-buffers-kill-emacs)
-    (let
+(progn
+  (defun missing-man-hook ()
+    (if
+     (and
+      (derived-mode-p 'Man-mode)
+      (= (buffer-size) 0))
+     (let
+         ((not-found-msg
+           (if (string-match-p "-k " Man-arguments)
+               (format "%s: no matches" Man-arguments)
+               (format "Can't find the %s manpage" (Man-page-from-arguments Man-arguments))))
+          (not-found-buf (generate-new-buffer "*Man NOT FOUND*")))
+       (with-current-buffer
+           not-found-buf
+         (progn
+           (insert not-found-msg)
+           (Man-mode)
+           (setq-local Man-columns (Man-columns))
+           (display-buffer not-found-buf)
+           (delete-other-windows (get-buffer-window not-found-buf)))))))
+
+  (add-hook 'kill-buffer-hook 'missing-man-hook)
+
+  (man "${@}")
+  (setq confirm-kill-processes nil)
+  (keymap-set Man-mode-map "q" 'save-buffers-kill-emacs)
+  (let
       ((man-buffer (car (match-buffers "man ${@}"))))
-      (display-buffer man-buffer)
-      (delete-other-windows (get-buffer-window man-buffer))))
+    (display-buffer man-buffer)
+    (delete-other-windows (get-buffer-window man-buffer))))
 ELISP
 
   emacs --eval "${man_prog}"
