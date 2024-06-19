@@ -57,9 +57,19 @@ man() {
 
   (add-hook 'kill-buffer-hook 'missing-man-hook)
 
+  (defun quit-man-buffer ()
+    (interactive)
+    (remove-hook 'kill-buffer-query-functions #'process-kill-buffer-query-function)
+    (quit-window t)
+    (if (not (match-buffers
+              (lambda (buffer-name)
+                (with-current-buffer buffer-name
+                  (derived-mode-p 'Man-mode)))))
+        (save-buffers-kill-emacs)))
+
   (man "${@}")
   (setq confirm-kill-processes nil)
-  (keymap-set Man-mode-map "q" 'save-buffers-kill-emacs)
+  (keymap-set Man-mode-map "q" 'quit-man-buffer)
   (let
       ((man-buffer (car (match-buffers "man ${@}"))))
     (display-buffer man-buffer)
