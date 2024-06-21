@@ -75,7 +75,33 @@
  'go-mode-hook
  (lambda ()
    (add-hook 'before-save-hook #'gofmt-before-save)))
-                          
+
+;; Match testify assertion failures in compilation mode
+;; TODO clean this up
+(add-hook
+ 'go-mode-hook
+ (lambda ()
+   (when (and (boundp 'compilation-error-regexp-alist)
+              (boundp 'compilation-error-regexp-alist-alist))
+     (add-to-list 'compilation-error-regexp-alist 'testify-assertion)
+     (add-to-list
+      'compilation-error-regexp-alist-alist
+      (list
+       'testify-assertion
+       (rx
+        bol
+        (* space)
+        "Error Trace:"
+        (* space)
+        (group-n 1 (* (not ":")))
+        ":"
+        (group-n 2 (* digit))
+        eol)
+       1
+       2)
+      t))))
+
+
 ;;------------------------------------------------------------------------------
 ;; Shell Stuff
 ;;------------------------------------------------------------------------------
