@@ -11,15 +11,29 @@
   (interactive)
   (if
    buffer-file-name
-   (browse-url
-    (string-join
-     (list
-      (ghh--repo-url "origin")
-      "blob"
-      (ghh--main-branch)
-      (ghh--file-relto-root buffer-file-name))
-     "/"))
+   (browse-url (ghh--file-url buffer-file-name))
    (error "current buffer is not a file")))
+
+(defun ghh-browse-to-line ()
+  "Opens the current file in github at the current line. WIP"
+  (interactive)
+  (if
+   buffer-file-name
+   (browse-url
+    (concat
+     (ghh--file-url buffer-file-name)
+     "#L"
+     (number-to-string (line-number-at-pos))))
+   (error "current buffer is not a file")))
+
+(defun ghh--file-url (filename)
+  (string-join
+   (list
+    (ghh--repo-url "origin")
+    "blob"
+    (ghh--main-branch)
+    (ghh--file-relto-root filename))
+   "/"))
 
 (defun ghh--main-branch ()
   "main")
