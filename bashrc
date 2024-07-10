@@ -79,7 +79,8 @@ ELISP
   emacs --eval "${man_prog}"
 }
 
-[ -s ~/github/sk/sk.sh ] && \. ~/github/sk/sk.sh # load sk
+# load sk
+[ -s /opt/homebrew/opt/sk/share/sk/sk.sh ] && . /opt/homebrew/opt/sk/share/sk/sk.sh
 
 export PS1="  [\h] \W > "
 
