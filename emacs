@@ -26,6 +26,8 @@
 ;;------------------------------------------------------------------------------
 (global-set-key (kbd "M-1") 'compile)
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
+(global-set-key (kbd "M-<up>") 'backward-paragraph)
+(global-set-key (kbd "M-<down>") 'forward-paragraph)
 
 (setq-default indent-tabs-mode nil)
 (setq column-number-mode t)
