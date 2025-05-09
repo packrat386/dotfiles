@@ -46,10 +46,10 @@
 
 (defun ghh--repo-url (remote-name)
   (let ((remote-url (ghh--remote-url remote-name)))
-    (if
-     (string-match-p "^https" remote-url)
-     (ghh--repo-url-https remote-url)
-     (ghh--repo-url-ssh remote-url))))
+    (cond
+      ((string-match-p "^https" remote-url) (ghh--repo-url-https remote-url))
+      ((string-match-p "^ssh" remote-url) (ghh--repo-url-ssh remote-url))
+      (t (ghh--repo-url-ssh-legacy remote-url)))))
 
 (defun ghh--repo-url-https (remote-url)
   (if
@@ -62,7 +62,7 @@
     (match-string 3 remote-url))
    (error (format "unrecognized URL format: %s" remote-url))))
 
-(defun ghh--repo-url-ssh (remote-url)
+(defun ghh--repo-url-ssh-legacy (remote-url)
   (if
    (string-match
     "^git@\\([[:alnum:]-\\.]*\\):\\([[:alnum:]-]*\\)/\\([[:alnum:]-_\\.]*\\)\\.git$"
@@ -72,6 +72,18 @@
     (match-string 2 remote-url)
     (match-string 3 remote-url))
    (error (format "unrecognized URL format: %s" remote-url))))
+
+(defun ghh--repo-url-ssh (remote-url)
+  (if
+   (string-match
+    "^ssh://git@\\([[:alnum:]-\\.]*\\)/\\([[:alnum:]-]*\\)/\\([[:alnum:]-_\\.]*\\)\\.git$"
+    remote-url)
+   (ghh--repo-url-from
+    (match-string 1 remote-url)
+    (match-string 2 remote-url)
+    (match-string 3 remote-url))
+   (error (format "unrecognized URL format: %s" remote-url))))
+
 
 (defun ghh--repo-url-from (hostname username reponame)
   (format "https://%s/%s/%s" hostname username reponame))
