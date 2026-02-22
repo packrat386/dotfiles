@@ -1,9 +1,11 @@
 export PATH=/usr/local/bin:$PATH
+export PATH=~/.local/bin:$PATH
 export EDITOR=emacs
 unset COLORTERM
 
 alias l='ls'
 alias ll='ls -al'
+alias e='emacs'
 
 # brew env vars
 if [ -f /opt/homebrew/bin/brew ]; then
@@ -11,10 +13,6 @@ if [ -f /opt/homebrew/bin/brew ]; then
 fi
 
 # OSX
-if [ -f /usr/local/opt/chruby/share/chruby/chruby.sh ]; then
-   source /usr/local/opt/chruby/share/chruby/chruby.sh
-fi
-
 if [ -f /opt/homebrew/opt/chruby/share/chruby/chruby.sh ]; then
   source /opt/homebrew/opt/chruby/share/chruby/chruby.sh
 fi
@@ -24,7 +22,7 @@ if [ -f /usr/local/share/chruby/chruby.sh ]; then
    source /usr/local/share/chruby/chruby.sh
 fi
 
-chruby 3.2
+chruby $(chruby | grep -E -o '[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+' | sort -V -r | head -n 1)
 
 # It's go time
 export GOPATH=~/go
