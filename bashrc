@@ -77,8 +77,18 @@ ELISP
   emacs --eval "${man_prog}"
 }
 
+# pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - bash)"
+
+# perlbrew
+[ -s ~/perl5/perlbrew/etc/bashrc ] && . ~/perl5/perlbrew/etc/bashrc
+
 # load sk
 [ -s /opt/homebrew/opt/sk/share/sk/sk.sh ] && . /opt/homebrew/opt/sk/share/sk/sk.sh
+
+export KAMINO_ROOT="${HOME}/repos"
 
 export PS1="  [\h] \W > "
 
